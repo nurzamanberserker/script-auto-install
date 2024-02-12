@@ -7,6 +7,50 @@ green='\e[0;32m'
 yell='\e[1;33m'
 tyblue='\e[1;36m'
 NC='\e[0m'
+ipku=$(wget -qO- ipinfo.io/ip);
+permisi(){
+iplist=$(curl -sS https://tmtunnel.tech/iplist | grep $ipku | awk '{print $4}')
+if [[ $ipku = $iplist ]]; then
+echo -e "\e[32mPermission Accepted...\e[0m"
+else
+echo -e "\e[31mPermission Denied!\e[0m";
+exit 0
+fi
+}
+cekexp(){
+timestamp=$(date +%s)
+expku=$(curl -sS https://tmtunnel.tech/iplist | grep $ipku | awk '{print $3}')
+if [[ $timestamp < $expku ]]; then
+echo -e "\e[32mScript Active...\e[0m"
+else
+echo -e "\e[31mScript expired!\e[0m";
+exit 0
+fi
+}
+permisi
+cekexp
+userip=$(curl -sS https://tmtunnel.tech/iplist | grep $ipku | awk '{print $1}')
+echo "Welcome $userip to Mina Xray SSH"
+
+localip=$(hostname -I | cut -d\  -f1)
+hst=( `hostname` )
+dart=$(cat /etc/hosts | grep -w `hostname` | awk '{print $2}')
+if [[ "$hst" != "$dart" ]]; then
+echo "$localip $(hostname)" >> /etc/hosts
+fi
+if [ -f "/root/log-install.txt" ]; then
+rm -fr /root/log-install.txt
+fi
+mkdir -p /etc/xray
+mkdir -p /etc/v2ray
+touch /etc/xray/domain
+touch /etc/v2ray/domain
+touch /etc/xray/scdomain
+touch /etc/v2ray/scdomain
+
+ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
+sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
 
 apt install git curl -y >/dev/null 2>&1
 apt install python -y >/dev/null 2>&1
