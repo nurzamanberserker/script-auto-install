@@ -1,2 +1,2 @@
 #!/bin/bash
-link="https://github.com/nurzamanberserker/script-auto-install/"
+link="https://raw.githubusercontent.com/nurzamanberserker/script-auto-install/main/"
