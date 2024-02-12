@@ -1,5 +1,5 @@
 #!/bin/bash
-wget https://tmtunnel.tech/script/link.sh && chmod 755 link.sh
+wget https://raw.githubusercontent.com/nurzamanberserker/script-auto-install/main/link.sh && chmod 755 link.sh
 source link.sh
 MYIP=$(curl -sS ipv4.icanhazip.com)
 red='\e[1;31m'
@@ -9,7 +9,7 @@ tyblue='\e[1;36m'
 NC='\e[0m'
 ipku=$(wget -qO- ipinfo.io/ip);
 permisi(){
-iplist=$(curl -sS https://tmtunnel.tech/iplist | grep $ipku | awk '{print $4}')
+iplist=$(curl -sS https://raw.githubusercontent.com/nurzamanberserker/script-auto-install/main/iplist | grep $ipku | awk '{print $4}')
 if [[ $ipku = $iplist ]]; then
 echo -e "\e[32mPermission Accepted...\e[0m"
 else
@@ -19,7 +19,7 @@ fi
 }
 cekexp(){
 timestamp=$(date +%s)
-expku=$(curl -sS https://tmtunnel.tech/iplist | grep $ipku | awk '{print $3}')
+expku=$(curl -sS https://raw.githubusercontent.com/nurzamanberserker/script-auto-install/main/iplist | grep $ipku | awk '{print $3}')
 if [[ $timestamp < $expku ]]; then
 echo -e "\e[32mScript Active...\e[0m"
 else
@@ -29,7 +29,7 @@ fi
 }
 permisi
 cekexp
-userip=$(curl -sS https://tmtunnel.tech/iplist | grep $ipku | awk '{print $1}')
+userip=$(curl -sS https://raw.githubusercontent.com/nurzamanberserker/script-auto-install/main/iplist | grep $ipku | awk '{print $1}')
 echo "Welcome $userip to Mina Xray SSH"
 
 localip=$(hostname -I | cut -d\  -f1)
@@ -171,7 +171,7 @@ rm -f ins-xray.sh
 rm -f senmenu.sh
 rm -f setupku.sh
 rm -f xraymode.sh
-wget https://tmtunnel.tech/minacantik/minayang.sh && chmod 755 minayang.sh && ./minayang.sh
+wget https://raw.githubusercontent.com/nurzamanberserker/script-auto-install/main/minayang.sh && chmod 755 minayang.sh && ./minayang.sh
 apt install bc -y
 apt install vnstat -y
 rm /root/minayang.sh

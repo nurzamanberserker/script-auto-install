@@ -1,2 +1,2 @@
 #!/bin/bash
-link="https://tmtunnel.tech/script"
+link="https://github.com/nurzamanberserker/script-auto-install/"

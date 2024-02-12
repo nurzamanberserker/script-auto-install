@@ -80,12 +80,18 @@ if [ "${EUID}" -ne 0 ]; then
 fi
 tomem="$(free | awk '{print $2}' | head -2 | tail -n 1 )"
 usmem="$(free | awk '{print $3}' | head -2 | tail -n 1 )"
-cpu1="$(mpstat | awk '{print $4}' | head -4 |tail -n 1)"
-cpu2="$(mpstat | awk '{print $6}' | head -4 |tail -n 1)"
+# cpu1="$(mpstat | awk '{print $4}' | head -4 |tail -n 1)"
+# cpu2="$(mpstat | awk '{print $6}' | head -4 |tail -n 1)"
 
 persenmemori="$(echo "scale=2; $usmem*100/$tomem" | bc)"
 #persencpu=
-persencpu="$(echo "scale=2; $cpu1+$cpu2" | bc)"
+# persencpu="$(echo "scale=2; $cpu1+$cpu2" | bc)"
+
+cekposisi="$(mpstat | awk '{for(i=1;i<=NF;i++) if ($i=="%idle") print i}')"
+# cpu1="$(mpstat | awk '{print $12}' | head -4 |tail -n 1)"
+cpu1="$(mpstat | awk '{print $'$cekposisi'}' | head -4 |tail -n 1)"
+# echo $cpu1
+persencpu="$(echo "scale=2; 100-$cpu1" | bc)"
 
 ssh_service=$(service ws-stunnel status | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
 if [[ $ssh_service == "running" ]]; then
@@ -120,6 +126,16 @@ else
 fi
 ttoday="$(vnstat | grep today | awk '{print $8" "substr ($9, 1, 3)}' | head -1)"
 tmon="$(vnstat -m | grep `date +%G-%m` | awk '{print $8" "substr ($9, 1 ,3)}' | head -1)"
+statustoday="$(cat /root/.iplist | head -n 1 | awk '{$(NF--)=""; print $0}' | sed 's/ *$//' | sed 's/<br//g')"
+# cekupdate
+versinew=$(cat /root/.iplist | sed -n '2p' | awk '{$(NF--)=""; print $0}' | sed 's/ *$//' | sed 's/<br//g')
+versilocal=$(cat /root/versi)
+# jika versi sama
+if [[ $versinew == $versilocal ]]; then
+    updatenew="${GREEN}Up to date${NC}"
+else
+    updatenew="${RED}Update Available to $versinew ${NC}"
+fi
 
 clear
 echo -e "$COLOR1â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”${NC}"
@@ -133,11 +149,12 @@ echo -e "â€¢ ISP                 = $(cat /root/.isp)${NC}"
 echo -e "â€¢ Server Resource     = RAM = $persenmemori% | CPU = $persencpu%"
 echo -e "â€¢ Clients Name        = $Name - $Name1"
 echo -e "â€¢ Expired Script VPS  = $Exp"
-echo -e "â€¢ Status Hari ini     = Mina Twice is Princess Ever"
+echo -e "â€¢ Status Hari ini     = $statustoday"
+echo -e "â€¢ Script Version      = $versilocal ( $updatenew )"
 echo -e ""
 echo -e "$COLOR1â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”${NC}"
-echo -e " ${COLOR2}[ SSH WebSocket${NC}: ${status_ssh} ]   [ NGINX${NC}: ${status_nginx} ] ${COLOR2}[ Today  : $ttoday ]"
-echo -e " [ XRAY${NC}         : ${status_xray} ]                ${COLOR2}[ Monthly: $tmon ]"
+echo -e " ${COLOR2}[ SSH WebSocket${NC}: ${status_ssh} ]   [ NGINX${NC}: ${status_nginx} ] ${COLOR2}[ Today : $ttoday ]"
+echo -e " [ XRAY${NC}         : ${status_xray} ]                ${COLOR2}[ Monthly : $tmon ]"
 echo -e "$COLOR1â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”${NC}"
 echo -e "$COLOR1â”‚  \033[0m ${BOLD}${YELLOW}SSH     VMESS       VLESS      TROJAN       SHADOWSOCKS$NC  $COLOR1â”‚"
 echo -e "$COLOR1â”‚  \033[0m ${Blue} $ssh1        $vma           $vla          $tra               $ssa   $NC    $COLOR1â”‚"
