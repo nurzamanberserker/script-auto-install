@@ -8,7 +8,28 @@ yell='\e[1;33m'
 tyblue='\e[1;36m'
 NC='\e[0m'
 ipku=$(wget -qO- ipinfo.io/ip);
-
+permisi(){
+iplist=$(curl -sS https://raw.githubusercontent.com/nurzamanberserker/script-auto-install/main/iplist | grep $ipku | awk '{print $4}')
+if [[ $ipku = $iplist ]]; then
+echo -e "\e[32mPermission Accepted...\e[0m"
+else
+echo -e "\e[31mPermission Denied!\e[0m";
+exit 0
+fi
+}
+cekexp(){
+timestamp=$(date +%s)
+expku=$(curl -sS https://raw.githubusercontent.com/nurzamanberserker/script-auto-install/main/iplist | grep $ipku | awk '{print $3}')
+if [[ $timestamp < $expku ]]; then
+echo -e "\e[32mScript Active...\e[0m"
+else
+echo -e "\e[31mScript expired!\e[0m";
+exit 0
+fi
+}
+permisi
+cekexp
+userip=$(curl -sS https://raw.githubusercontent.com/nurzamanberserker/script-auto-install/main/iplist | grep $ipku | awk '{print $1}')
 echo "Welcome $userip to Mina Xray SSH"
 
 localip=$(hostname -I | cut -d\  -f1)
