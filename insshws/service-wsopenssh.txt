@@ -13,4 +13,4 @@ ExecStart=/usr/bin/python -O /usr/local/bin/ws-openssh 2082
 Restart=on-failure
 
 [Install]
-WantedBy=multi-user.targe
+WantedBy=multi-user.target
